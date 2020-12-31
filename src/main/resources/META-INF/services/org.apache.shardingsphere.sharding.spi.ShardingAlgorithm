@@ -16,3 +16,4 @@
 #
  
 com.nolouser.demo.config.MyShardingAlgorithm
+com.nolouser.demo.config.MyHintShradingAlgorithm

@@ -1,6 +1,10 @@
 package com.nolouser.demo.service;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.nolouser.demo.entity.TOrder;
+import com.nolouser.demo.entity.TOrderExtend;
+import com.nolouser.demo.mapper.TOrderExtendMapper;
+import org.apache.shardingsphere.infra.hint.HintManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +24,9 @@ public class TOrderServiceTest {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private TOrderExtendMapper tOrderExtendMapper;
 
     /**
      * 创建60个分表
@@ -51,6 +58,21 @@ public class TOrderServiceTest {
     public void queryById(){
         TOrder tOrder = tOrderService.getById(548438946523623424L);
         System.out.println(tOrder);
+    }
+
+    /**
+     * 强制路由
+     */
+    @Test
+    public void queryWithHint(){
+        try (HintManager hintManager=HintManager.getInstance();
+        ){
+            // 指定查询的分表
+            hintManager.addTableShardingValue("t_order_hint","24");
+            TOrder tOrder=tOrderExtendMapper.selectOne(Wrappers.<TOrderExtend>lambdaQuery().eq(TOrderExtend::getUserId,0));
+            System.out.println(tOrder);
+        }
+
     }
 
 
