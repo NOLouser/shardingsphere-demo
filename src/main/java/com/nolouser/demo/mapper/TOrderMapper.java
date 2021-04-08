@@ -1,7 +1,6 @@
 package com.nolouser.demo.mapper;
 
 import com.nolouser.demo.entity.TOrder;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * <p>
@@ -11,6 +10,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author nolouser
  * @since 2020-12-22
  */
-public interface TOrderMapper extends BaseMapper<TOrder> {
+public interface TOrderMapper extends ExtensionBaseMapper<TOrder> {
 
 }

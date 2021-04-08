@@ -67,3 +67,18 @@ spring:
     props:
       # 打印SQL语句
       sql-show: true
+      check-table-metadata-enabled: false
+      max-connections-size-per-query: 100
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 12345678
+    database: 0
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: 100
+

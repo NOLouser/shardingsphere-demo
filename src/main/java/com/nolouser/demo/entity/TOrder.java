@@ -34,6 +34,13 @@ public class TOrder implements Serializable {
     @TableField("datetime")
     private String datetime;
 
+    public TOrder() {
+    }
+
+    public TOrder(Long orderId) {
+        this.orderId = orderId;
+    }
+
     public Long getOrderId() {
         return orderId;
     }

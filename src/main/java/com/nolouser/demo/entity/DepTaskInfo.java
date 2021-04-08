@@ -187,6 +187,12 @@ public class DepTaskInfo implements Serializable {
     @TableField("update_date_")
     private LocalDateTime updateDate;
 
+    public DepTaskInfo(){}
+
+    public DepTaskInfo(String extKhName) {
+        this.extKhName = extKhName;
+    }
+
     public String getId() {
         return id;
     }

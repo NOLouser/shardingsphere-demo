@@ -1,0 +1,36 @@
+Configuration:
+  status: INFO
+  monitorInterval: 60
+
+  Properties:
+    Property:
+      - name: log.path
+        value: D:/KungeekProjects/logs/nolouser-demo
+      - name: log.pattern
+        value: "[%p] %d{yyyy-MM-dd HH:mm:ss.SSS} %t %class:%line - %msg%n"
+  Appenders:
+    Console:
+      name: Console
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: ${log.pattern}
+    RollingRandomAccessFile:
+      - name: Running_File
+        fileName: ${log.path}.log
+        filePattern: "${log.path}.%d{yyyy-MM-dd-HH}.log"
+        PatternLayout:
+          pattern: ${log.pattern}
+        Policies:
+          TimeBasedTriggeringPolicy:
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy:
+          max: 50
+  Loggers:
+    Root:
+      level: INFO
+      name: com.nolouser
+      additivity: false
+      AppenderRef:
+        - ref: Console
+        - ref: Running_File
