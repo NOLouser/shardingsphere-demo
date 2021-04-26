@@ -1,16 +1,16 @@
 package com.nolouser.demo;
 
+import cn.hutool.core.lang.WeightRandom;
+import cn.hutool.core.util.RandomUtil;
 import com.google.common.collect.*;
-import com.google.gson.Gson;
 import com.nolouser.demo.entity.TOrder;
-import com.nolouser.demo.note.structure.Node;
 import org.apache.commons.codec.digest.Md5Crypt;
-import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -115,5 +115,122 @@ public class NolouserTest {
         condition.signal();
 
     }
+
+    @Test
+    public void hashMapMemoryLeak() {
+        HashMap<TOrder, String> hashMap = new HashMap<>();
+
+        TOrder tOrder = new TOrder();
+        tOrder.setStatus("1");
+        tOrder.setOrderId(10000L);
+        System.out.println(tOrder.hashCode());
+        hashMap.put(tOrder, "hello, world!");
+        tOrder.setStatus("2");
+        System.out.println(tOrder.hashCode());
+        System.out.println(hashMap.get(tOrder));
+
+        HashMap<String, String> stringHashMap = new HashMap<>();
+        String myStr = "Hello, world!";
+        System.out.println(myStr.hashCode());
+        stringHashMap.put(myStr, "Hello, world!");
+        myStr = "Hello, world1!";
+        System.out.println(myStr.hashCode());
+        System.out.println(stringHashMap.get("Hello, world!"));
+    }
+
+
+    @Test
+    public void testBuildTreeMap() {
+        List<String> reachableList = Arrays.asList("dep:dispatch:task:KUNGEEK_RPA.PIT_0:T_pit.91440101054524037P:SBZTCX:44", "dep:dispatch:task:KUNGEEK_RPA.PIT_0:T_pit.914401010611413416:SBZTCX:44");
+        Map<String, Object> resultMap = buildTreeMap(reachableList);
+
+        System.out.println(resultMap);
+
+        Map<String, Object> reverseMap = overturnMap((Map<String, Object>)((Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) resultMap.get("dep")).get("dispatch")).get("task")).get("KUNGEEK_RPA.PIT_0"));
+
+        System.out.println(reverseMap);
+
+    }
+
+    public Map<String, Object> buildTreeMap(List<String> reachableList) {
+        Map<String, Object> resultMap = new HashMap<>();
+        Map<String, Object> nowMap;
+        for (String queueName : reachableList) {
+            String[] nodeNames = queueName.split(":");
+            nowMap = resultMap;
+            for (int i = 0; i < nodeNames.length - 1; i++) {
+                String nodeName = nodeNames[i];
+                Object nodeObj = nowMap.get(nodeName);
+                if (nodeObj == null && i != nodeNames.length - 2) {
+                    Map<String, Object> swap = new HashMap<>();
+                    nowMap.put(nodeName, swap);
+                    nowMap = swap;
+                } else if (nodeObj != null && i != nodeNames.length - 2) {
+                    nowMap = (Map<String, Object>) nodeObj;
+                } else if (nodeObj == null && i == nodeNames.length - 2) {
+                    List<String> leaf = new ArrayList<>();
+                    leaf.add(nodeNames[nodeNames.length - 1]);
+                    nowMap.put(nodeName, leaf);
+                } else {
+                    List<String> leaf = (List<String>) nodeObj;
+                    Objects.requireNonNull(leaf).add(nodeNames[nodeNames.length - 1]);
+                }
+            }
+        }
+        return resultMap;
+    }
+
+    public Map<String, Object> overturnMap(Map<String, Object> map) {
+        Map<String, Object> resultMap = new ConcurrentHashMap<>();
+        map.forEach((key, value) -> {
+            Map<String, Object> areaMap = (Map<String, Object>) value;
+            areaMap.forEach((key1, value1) -> {
+                List<String> value11 = (List<String>) value1;
+                String taskType = value11.get(0);
+                Object obj = resultMap.get(taskType);
+                if (obj == null) {
+                    Map<String, Object> temp = new ConcurrentHashMap<>();
+                    List<String> list1 = new CopyOnWriteArrayList<>();
+                    list1.add(key);
+                    temp.put(key1, list1);
+                    resultMap.put(taskType, temp);
+                } else {
+                    Map<String, Object> objectMap = (Map<String, Object>) obj;
+                    Object o = objectMap.get(key1);
+                    if (o == null) {
+                        List<String> list1 = new CopyOnWriteArrayList<>();
+                        list1.add(key);
+                        objectMap.put(key1, list1);
+                    } else {
+                        List<String> o1 = (List<String>) o;
+                        o1.add(key);
+                        objectMap.put(key1, o1);
+                    }
+                }
+            });
+        });
+        return resultMap;
+    }
+
+
+    @Test
+    public void randomWeight() {
+        Map<Integer, Integer> result = new HashMap<>();
+
+        List<WeightRandom.WeightObj<Integer>> weightRandoms = new ArrayList<>();
+        for (int i = 1; i < 10; i++) {
+            weightRandoms.add(new WeightRandom.WeightObj<>(i, i));
+        }
+
+        WeightRandom<Integer> stringWeightRandom = RandomUtil.weightRandom(weightRandoms);
+        for (int i = 0; i < 10000; i++) {
+            Integer randomInt = stringWeightRandom.next();
+            result.put(randomInt, result.getOrDefault(randomInt, 0)+1);
+        }
+
+        System.out.println(result);
+
+    }
+
 
 }

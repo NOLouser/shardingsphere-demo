@@ -1,5 +1,6 @@
 package com.nolouser.demo;
 
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -64,22 +65,47 @@ public class RedisTemplateTest {
 
     @Test
     public void zset() {
+        String value = "91440101MA5AXD5J8L";
         BoundZSetOperations<String, Object> zSetOperations = redisTemplate.boundZSetOps("dep:dispatch:lock:condition");
         zSetOperations.range(0, -1).forEach(key->{
-            System.out.println(key.toString());
+            String temp = (String) key;
+            if (temp.contains(value)) {
+                System.out.println();
+                System.out.println(value);
+
+                /*// 移除筛选锁
+                zSetOperations.remove(value);*/
+            }
         });
 
     }
 
     @Test
     public void keys() {
-        Set<String> keys = redisTemplate.keys("*13323789893*");
-        keys.forEach(System.out::println);
+        String matchKey = "*:99*";
+        Set<String> result = redisTemplate.execute((RedisCallback<Set<String>>) connection -> {
+            Set<String> keys = Sets.newHashSet();
+            // Cursor无需释放，RedisTemplate已经做了连接释放
+            Cursor<byte[]> cursor = connection.scan(ScanOptions.scanOptions().match(matchKey).count(10000).build());
+            while (cursor.hasNext()) {
+                String queueName = new String(cursor.next());
+                keys.add(queueName);
+            }
+            return keys;
+        });
+
+        result.forEach(System.out::println);
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void list() {
-        BoundListOperations<String, Object> boundListOperations = redisTemplate.boundListOps("dep:dispatch:task:RPA.DEP_0:13323789893:FTSP_SB_ZZS_INFO:41");
+        BoundListOperations<String, Object> boundListOperations = redisTemplate.boundListOps("dep:dispatch:task:RPA.DEP_0:T_et.91440705MA55LPAX7P:FTSP_SB_HISSBBXX:44");
         boundListOperations.range(0,-1).forEach(System.out::println);
     }
 

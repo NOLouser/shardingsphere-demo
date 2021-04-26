@@ -78,6 +78,11 @@ public class TOrder implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        return Math.toIntExact(this.status.hashCode() + this.orderId);
+    }
+
+    @Override
     public String toString() {
         return "TOrder{" +
             "orderId=" + orderId +
