@@ -5,6 +5,8 @@ import cn.hutool.core.util.RandomUtil;
 import com.google.common.collect.*;
 import com.nolouser.demo.entity.TOrder;
 import org.apache.commons.codec.digest.Md5Crypt;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -218,8 +220,8 @@ public class NolouserTest {
         Map<Integer, Integer> result = new HashMap<>();
 
         List<WeightRandom.WeightObj<Integer>> weightRandoms = new ArrayList<>();
-        for (int i = 1; i < 10; i++) {
-            weightRandoms.add(new WeightRandom.WeightObj<>(i, i));
+        for (int i = 0; i < 10; i++) {
+            weightRandoms.add(new WeightRandom.WeightObj<>(i, 1));
         }
 
         WeightRandom<Integer> stringWeightRandom = RandomUtil.weightRandom(weightRandoms);

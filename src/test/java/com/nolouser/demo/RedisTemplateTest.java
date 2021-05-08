@@ -65,7 +65,7 @@ public class RedisTemplateTest {
 
     @Test
     public void zset() {
-        String value = "91440101MA5AXD5J8L";
+        String value = "9131012008623224XR";
         BoundZSetOperations<String, Object> zSetOperations = redisTemplate.boundZSetOps("dep:dispatch:lock:condition");
         zSetOperations.range(0, -1).forEach(key->{
             String temp = (String) key;
@@ -82,7 +82,7 @@ public class RedisTemplateTest {
 
     @Test
     public void keys() {
-        String matchKey = "*:99*";
+        String matchKey = "*:9131012008623224XR*";
         Set<String> result = redisTemplate.execute((RedisCallback<Set<String>>) connection -> {
             Set<String> keys = Sets.newHashSet();
             // Cursor无需释放，RedisTemplate已经做了连接释放
@@ -105,7 +105,7 @@ public class RedisTemplateTest {
 
     @Test
     public void list() {
-        BoundListOperations<String, Object> boundListOperations = redisTemplate.boundListOps("dep:dispatch:task:RPA.DEP_0:T_et.91440705MA55LPAX7P:FTSP_SB_HISSBBXX:44");
+        BoundListOperations<String, Object> boundListOperations = redisTemplate.boundListOps("dep:dispatch:task:SELENIUM_0:DEFAULT:FTSP_KH_SW_JCXX:31");
         boundListOperations.range(0,-1).forEach(System.out::println);
     }
 

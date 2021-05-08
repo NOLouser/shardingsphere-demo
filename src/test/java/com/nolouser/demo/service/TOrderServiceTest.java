@@ -86,11 +86,17 @@ public class TOrderServiceTest {
      */
     @Test
     public void queryWithHint(){
-        try (HintManager hintManager=HintManager.getInstance();
-        ){
+        try (HintManager hintManager=HintManager.getInstance();){
             // 指定查询的分表
             hintManager.addTableShardingValue("t_order_hint","40");
-            TOrder tOrder=tOrderExtendMapper.selectOne(Wrappers.<TOrderExtend>lambdaQuery().eq(TOrderExtend::getUserId,9));
+            TOrderExtend tOrder=tOrderExtendMapper.selectOne(Wrappers.<TOrderExtend>lambdaQuery().eq(TOrderExtend::getUserId,9));
+            System.out.println(tOrder);
+        }
+
+        try (HintManager hintManager=HintManager.getInstance();){
+            // 指定查询的分表
+            hintManager.addTableShardingValue("t_order_hint","39");
+            TOrderExtend tOrder=tOrderExtendMapper.selectOne(Wrappers.<TOrderExtend>lambdaQuery().eq(TOrderExtend::getUserId,9));
             System.out.println(tOrder);
         }
 
