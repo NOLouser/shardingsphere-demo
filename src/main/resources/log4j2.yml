@@ -5,7 +5,7 @@ Configuration:
   Properties:
     Property:
       - name: log.path
-        value: D:/KungeekProjects/logs/nolouser-demo
+        value: D:/NOLOUSERProjects/logs/nolouser-demo
       - name: log.pattern
         value: "[%p] %d{yyyy-MM-dd HH:mm:ss.SSS} %t %class:%line - %msg%n"
   Appenders:

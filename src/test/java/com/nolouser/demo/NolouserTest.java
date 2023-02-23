@@ -143,12 +143,12 @@ public class NolouserTest {
 
     @Test
     public void testBuildTreeMap() {
-        List<String> reachableList = Arrays.asList("dep:dispatch:task:KUNGEEK_RPA.PIT_0:T_pit.91440101054524037P:SBZTCX:44", "dep:dispatch:task:KUNGEEK_RPA.PIT_0:T_pit.914401010611413416:SBZTCX:44");
+        List<String> reachableList = Arrays.asList("dep:dispatch:task:NOLOUSER_RPA.PIT_0:T_pit.91440101054524037P:SBZTCX:44", "dep:dispatch:task:NOLOUSER_RPA.PIT_0:T_pit.914401010611413416:SBZTCX:44");
         Map<String, Object> resultMap = buildTreeMap(reachableList);
 
         System.out.println(resultMap);
 
-        Map<String, Object> reverseMap = overturnMap((Map<String, Object>)((Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) resultMap.get("dep")).get("dispatch")).get("task")).get("KUNGEEK_RPA.PIT_0"));
+        Map<String, Object> reverseMap = overturnMap((Map<String, Object>)((Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) resultMap.get("dep")).get("dispatch")).get("task")).get("NOLOUSER_RPA.PIT_0"));
 
         System.out.println(reverseMap);
 
